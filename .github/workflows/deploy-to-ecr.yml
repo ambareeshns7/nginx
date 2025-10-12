@@ -30,10 +30,13 @@ jobs:
 
       # Step 4: Build Docker image
       - name: Build Docker image
+        env:
+          ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
         run: |
-          docker build -t ${{ secrets.ECR_REPOSITORY }} .
+          docker build -t $ECR_REPOSITORY .
 
       # Step 5: Tag Docker image
+      - name: Tag Docker image
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
@@ -41,7 +44,7 @@ jobs:
         run: |
           docker tag $ECR_REPOSITORY:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
 
-      # Step 6: Push to Amazon 
+      # Step 6: Push to Amazon ECR
       - name: Push Docker image to ECR
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
