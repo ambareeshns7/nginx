@@ -41,7 +41,7 @@ jobs:
         run: |
           docker tag $ECR_REPOSITORY:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
 
-      # Step 6: Push to Amazon ECR
+      # Step 6: Push to Amazon 
       - name: Push Docker image to ECR
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
