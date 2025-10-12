@@ -24,6 +24,9 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       # Step 3: Login to Amazon ECR
+      - name: Pull official Nginx image
+        run: docker pull nginx:alpine
+        
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
