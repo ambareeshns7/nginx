@@ -1,0 +1,33 @@
+image: docker:27
+
+pipelines:
+  branches:
+    master:
+      - step:
+          name: Build and Push Nginx Image to ECR
+          services:
+            - docker
+          script:
+            - apk add --no-cache aws-cli
+
+            # AWS authentication
+            - export AWS_DEFAULT_REGION=$AWS_REGION
+
+            # Login to ECR
+            - AWS_PASSWORD=$(aws ecr get-login-password --region $AWS_REGION)
+            - echo "$AWS_PASSWORD" | docker login --username AWS --password-stdin $ECR_REGISTRY
+            
+            # Disable BuildKit
+            - export DOCKER_BUILDKIT=0
+            
+            # Build Docker image
+            - docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY_NGINX:$BITBUCKET_BUILD_NUMBER" .
+
+            # Push build-number image
+            - docker push "$ECR_REGISTRY/$ECR_REPOSITORY_NGINX:$BITBUCKET_BUILD_NUMBER"
+
+
+definitions:
+  services:
+    docker:
+      memory: 3072
